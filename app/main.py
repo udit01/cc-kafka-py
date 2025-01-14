@@ -1,11 +1,26 @@
 import socket  # noqa: F401
+import base64
 
-def create_message(id):
-    id_bytes = id.to_bytes(4, byteorder="big")
-    return len(id_bytes).to_bytes(4, byteorder="big") + id_bytes
+def message(cid):
+    idByte = cid.to_bytes(4, byteorder="big")
+    header = len(idByte).to_bytes(4, byteorder="big")
+    return header + idByte
+
+def parse_request(req): 
+    message_size = int.from_bytes( (req[:4]), byteorder='big')
+    request_api_key = int.from_bytes( (req[4:6]), byteorder='big')
+    request_api_ver = int.from_bytes( (req[6:8]), byteorder='big')
+    correlation_id = int.from_bytes( (req[8:12]), byteorder='big')
+
+    print("client reponse had : ")
+    print(message_size, request_api_key, request_api_ver, correlation_id)
+    return correlation_id
+    
+
 def handle_client(client):
-    client.recv(1024)
-    client.sendall(create_message(7))
+    client_request = client.recv(1024)
+    corr_id = parse_request(client_request)
+    client.sendall(message(corr_id))
     client.close()
 
 def main():
