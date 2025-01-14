@@ -1,5 +1,12 @@
 import socket  # noqa: F401
 
+def create_message(id):
+    id_bytes = id.to_bytes(4, byteorder="big")
+    return len(id_bytes).to_bytes(4, byteorder="big") + id_bytes
+def handle_client(client):
+    client.recv(1024)
+    client.sendall(create_message(7))
+    client.close()
 
 def main():
     # You can use print statements as follows for debugging,
@@ -11,26 +18,9 @@ def main():
 
     server = socket.create_server(("localhost", 9092), reuse_port=True)
     
-    # while(True): 
-    client_socket, client_address = server.accept() # wait for client
-
-    encoding = 'utf-16'
-    
-    message_size = 1
-    corr_id = 7
-    header = corr_id
-    body = ''
-
-    # response = "%d%d"%(message_size, corr_id)
-    # print(response)
-    # response = bytes(response, 'utf-32')
-    # print(response)
-    response = bytes('0', encoding)
-    response += bytes('7', encoding)
-    # print(response)
-
-    # response = b'0001\n0007'
-    client_socket.send(response)
+    while True:
+        client, addr = server.accept()
+        handle_client(client)
 
     
 
