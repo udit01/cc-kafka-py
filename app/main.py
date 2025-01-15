@@ -69,11 +69,11 @@ def make_response(request: KafkaRequest):
 def handle_client(client):
     # client_request = client.recv(1024)
     client_request = KafkaRequest.from_client(client)
-    # print(client_request)    
+    print(client_request)    
     response = make_response(client_request)
-    # print(response)
+    print(response)
     client.sendall(response)
-    client.close()
+    # client.close()
 
 def main():
     # print("Logs from your program will appear here!")
