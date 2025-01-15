@@ -62,10 +62,10 @@ def main():
     threads = []
     while True: 
         client, addr = server.accept()
-        t = threading.Thread(target=client_loop, args=(client))
+        t = threading.Thread(target=client_loop, args=(client,))
         threads.append(t)
         t.start()
-        print("Serving %d clients.", len(threads), flush=True)
+        print("Serving clients:", len(threads), flush=True)
     
     # Good practice while ending
     for t in threads:
