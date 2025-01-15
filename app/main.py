@@ -66,21 +66,25 @@ def make_response(request: KafkaRequest):
 #     return message_size, request_api_key, request_api_ver, correlation_id
     
 
-def handle_client(client):
-    # client_request = client.recv(1024)
-    client_request = KafkaRequest.from_client(client)
-    print(client_request)    
-    response = make_response(client_request)
-    print(response)
-    client.sendall(response)
-    # client.close()
+# def handle_client(client):
+#     # client_request = client.recv(1024)
+#     client_request = KafkaRequest.from_client(client)
+#     print(client_request)    
+#     response = make_response(client_request)
+#     print(response)
+#     client.sendall(response)
+#     # client.close()
 
 def main():
     # print("Logs from your program will appear here!")
     server = socket.create_server(("localhost", 9092), reuse_port=True)
-    # while True:
-    client, addr = server.accept()
-    handle_client(client)
+    while True:
+        client, addr = server.accept()
+        client_request = KafkaRequest.from_client(client)
+        print(client_request)    
+        response = make_response(client_request)
+        print(response)
+        client.send(response)
 
     
 
