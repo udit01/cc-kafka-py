@@ -78,13 +78,13 @@ def make_response(request: KafkaRequest):
 def main():
     # print("Logs from your program will appear here!")
     server = socket.create_server(("localhost", 9092), reuse_port=True)
+    client, addr = server.accept()
     while True:
-        client, addr = server.accept()
         client_request = KafkaRequest.from_client(client)
         print(client_request)    
         response = make_response(client_request)
         print(response)
-        client.send(response)
+        client.sendall(response)
 
     
 
