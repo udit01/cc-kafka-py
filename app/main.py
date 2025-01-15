@@ -14,7 +14,7 @@ class KafkaRequest:
     correlation_id: int
     @staticmethod
     def from_client(client: socket.socket):
-        data = client.recv(2048)
+        data = client.recv(8192)
         return KafkaRequest(
             msg_size=int.from_bytes(data[:4], byteorder='big'),
             api_key=int.from_bytes(data[4:6], byteorder='big'),
