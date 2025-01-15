@@ -78,9 +78,9 @@ def handle_client(client):
 def main():
     # print("Logs from your program will appear here!")
     server = socket.create_server(("localhost", 9092), reuse_port=True)
-    while True:
-        client, addr = server.accept()
-        handle_client(client)
+    # while True:
+    client, addr = server.accept()
+    handle_client(client)
 
     
 
