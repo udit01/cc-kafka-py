@@ -1,4 +1,5 @@
 import socket  
+import threading
 from dataclasses import dataclass
 from enum import Enum, unique
 
@@ -50,20 +51,25 @@ def make_response(request: KafkaRequest):
 def client_loop(client):
     while True:
         client_request = KafkaRequest.from_client(client)
-        print(client_request)    
+        print(client_request, flush=True)    
         response = make_response(client_request)
-        print(response)
+        # print(response)
         client.sendall(response)
 
 def main():
     # print("Logs from your program will appear here!")
     server = socket.create_server(("localhost", 9092), reuse_port=True)
+    threads = []
     while True: 
         client, addr = server.accept()
-        client_loop(client)
-
-
+        t = threading.Thread(target=client_loop, args=(client))
+        threads.append(t)
+        t.start()
+        print("Serving %d clients.", len(threads), flush=True)
     
+    # Good practice while ending
+    for t in threads:
+        t.join()    
 
 
 if __name__ == "__main__":
